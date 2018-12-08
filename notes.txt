@@ -1,0 +1,10 @@
+React Native Components
+-just react Components, features like state, props, jsx is all the same
+-native components used instead of web components in building the view
+-maps js code to obj-c or java code when rendering on phone
+
+React Native Elements
+-All in one UI kit for creating apps in react native
+-several useful UI components
+-useful in designing UI for your app
+install: yarn add react-native-elements
