@@ -8,3 +8,60 @@ React Native Elements
 -several useful UI components
 -useful in designing UI for your app
 install: yarn add react-native-elements
+
+React Native Navigation
+-need to navigate between screens and views
+-react uses react router dom
+-views get added to a stack and you can navigate back by popping the last view from the stack
+-tab navigation works similiarly
+-extensible and easy to use navigation solution
+-built in navigators: stack, drawer, tab, switch, or custom
+-install yarn add react-navigation
+-Root Page -> becomes bottom stack in views
+-Child Page -> added to top of stack
+-grandchild page -> added to top of stack
+stack:
+grandchild page
+child page
+root page
+-when you use back button, top most view is popped from the stack and previous screen is back in view
+-provides support for transition between screens
+-manages navigation history
+-provides gestures and animations when navigating between routes in the stack
+-enables you to go back
+Other navigators
+Drawer Navigation
+-provides automatic construction of the side drawer with navigation options
+-can customize the drawer
+Tab Navigation
+-typical bottom tab navigation support
+-a lot of dditional fetures to support custom navigators
+
+
+Redux Overview
+Actions go through dispatcher which changes store which changes store
+all changes go through dispatcher
+Main Principles
+Single Source of truth
+-single state object tree within a single store
+State is read only (no getters no setters)
+-Changes should only be done through Actions
+Changes are made through pure functions aka reducers
+-take previos state and action and return next state
+-no mutatino of previous state, create whole new state
+Reducer recieves actions from dispatch
+reducer functions result in new state
+state changes reflected to views
+uni directional data flow
+
+Redux Thunk
+middleware that allows you to write action creators that return a function instead of an action
+-can be used to delay the dispatch of an action
+-can be used to dispatch only if certain conditions met
+Inner function receives the dispatch() and getState() store methods
+
+Fetch
+xmlhttprequest is outdated
+fetch api is modern replacement for requests
+provides interface for fetching resources
+powerful, flexible, promise based
