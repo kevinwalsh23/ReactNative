@@ -65,3 +65,32 @@ xmlhttprequest is outdated
 fetch api is modern replacement for requests
 provides interface for fetching resources
 powerful, flexible, promise based
+
+Debugging
+debug remootely with react-debug
+React Native Activity Indicator
+create loading components
+isloading function available
+
+Forms and Modals
+Forms diff in mobile apps
+Modal: overlay on top of screen
+changes in elements reflected in state of current component
+data entry through form like elements are facilitated in react native
+textinput component allows you to type text in your app
+-attributes like securetextentry for handling password fields
+event binding like onchange text on change, onfocus, on blur etc
+input from react native elements allows for icons to the left and right of the fields
+
+Form Widgets
+switch
+slider
+picker (from list)
+Rating, checkbox, slider, datepicker, etc available
+
+Modal
+display overed current page
+opened and presented from another component
+needs to maintain state in host component about visibilty of Modal
+
+Synthesize forms using UI Widgets
