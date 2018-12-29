@@ -94,3 +94,61 @@ opened and presented from another component
 needs to maintain state in host component about visibilty of Modal
 
 Synthesize forms using UI Widgets
+
+Animations to the application
+better user experience
+supports powerful Animated api
+-fluid, powerful, easy
+-declarative relationships between inputs and outputs with configurable transforms in betweem
+-simple start.stop methods to control time based animation execution
+interpolate function: take range and map to output range
+const xpost1: map input to output, map into transform vairable and use translateX x coordindate to values provided
+Values in Animated-Animated.value()
+animated.ValueXY: vector
+Interpolate map input ranges to diff output ranges
+Types
+Animated.decay: fast starts and slows to stop
+Animated.spring: spring physics model
+Animated.timing: animate valoues over time using easing functions
+
+Animated Components
+Image
+ScrollView
+text
+view
+
+Control size of view, zoom, animate text etc
+Can compose animations: delay parallel, sequence, stagger
+
+React-native-animatable
+-takes animated api and packages into standard easy to use animations and declarative transitions
+-declaratibve precomopsed animations east to apply to text, view, Image
+-sev props: animation, duration, delay direction, easing iterationCount, transition
+imperative use
+animations exposed as functions on aimtable elements
+get reference to an elements
+apply animatino functions
+take duration argument
+returns a promse that ios resolved when animatino complese successfuy or cancelled
+
+Animated API 
+transform props as function of time
+Home Component, import Animated and Easing from react-native
+rendering three parts in app
+replace scrollview with Animations
+Home Component
+need to add constructor to store value in state for this app
+this.animatedValue = new Animated.Value(0) type used by api (object of type animat4ed value)
+inside Home compnent, in componentDidMount > call method this.animate();
+animate method > take animatedValue and this.animatedValue .setvalue(0); then Animated.timing 
+timing method from API, enables us to take value to change as function of time
+this.animatedValue, Animated.TimingAnimgationConfig > toValue: 8, duration is 8000 aka 8 seconds, easing > (how do you change this value, linear, slowly? etc)
+.start() starts the animation
+we can use this value to control certain properties
+Interpolation supported: define constant xpos1 = this.animatedValue.interpolate() meaning as value chagnes map value to a corresponding different value (inputRange: [0, 1, 3, 5], outputRange: [1200, 600, 0, -600, -1200] if input is 0 then outputs 1200 etc
+way of controlling the exposition for an item, so on second 0, this change applied is in the output list
+
+React Native animatable
+yarn install reactnativeanimatable...
+<animatable.view animation="preset animation" duration={how long} delay={time delayed}>
+
