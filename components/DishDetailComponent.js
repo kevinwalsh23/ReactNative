@@ -4,6 +4,7 @@ import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorite, postComment } from '../redux/ActionCreators';
+import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
     return {
@@ -25,6 +26,7 @@ function RenderDish(props) {
     
         if (dish != null) {
             return(
+                <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
                 <Card
                 featuredTitle={dish.name}
                 image={{ uri: baseUrl + dish.image}}>
@@ -36,6 +38,7 @@ function RenderDish(props) {
                         <Icon raised reverse name={ 'pencil' } type='font-awesome' color='#512DA8' onPress={() => props.addComment() }/>
                     </View>
                 </Card>
+                </Animatable.View>
             );
         }
         else {
@@ -47,11 +50,13 @@ function RenderComments(props) {
     const comments = props.comments;
     const RenderCommentItem = ({ item, index}) => {
         return(
+            <Animatable.View animation="fadeInUp" duration={2000} delay={1000}>        
             <View key={index} style={{margin:10}}>
                 <Text style={{fontSize:14}}>{item.comment}</Text>
                 <Text style={{fontSize: 12}}>{item.rating}</Text>
                 <Text style={{fontSize: 12}}>{'-- ' + item.author + ', ' + item.date}</Text>
             </View>
+            </Animatable.View>
         );
 
     };
