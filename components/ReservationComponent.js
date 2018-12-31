@@ -28,7 +28,7 @@ class Reservation extends Component {
         console.log(JSON.stringify(this.state));
         Alert.alert(
             'Your Reservation OK?',
-            'Number of Guests: ' + this.state.guests + 'Smoking: ' + this.state.smoking + 'Date and Time: ' + this.state.date,
+            JSON.stringify(this.state),
             [
             {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
             {text: 'OK', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
