@@ -152,3 +152,557 @@ React Native animatable
 yarn install reactnativeanimatable...
 <animatable.view animation="preset animation" duration={how long} delay={time delayed}>
 
+Gestures
+Swipe, multitouch, rotation, etc are all gestures in which the app wants to respond
+interacting with app by manipulating UI elements on screen
+Gesture responder system manages lifecycle of gestures
+-phases of touch, scrolling sliding on a widget, tapping
+Best practices
+-feedback/highlight: show whats handling touch
+-cancelability aborting an action mid touch
+Touchable, TouchableHighlight components built into react native
+PanResponder
+Reconciles several touches into a single gesture
+Makes single touch gestures resilient to extra touches
+Can recognize simple multitouch gestures
+Also part of react native, with api that can be used
+predictable wrapper of the responder handlers provided by gesture responder system
+-Native event and gestureState provided as params to handlers (event, gesturestate) => {}
+Gestures result in animations
+gestureState
+stateID: id of gestureState- persisted as long as there at least one touch on screen
+moveX: latest coordinates of recently moved touch
+moveY: latest screen coordinates of recently moved touch
+x0: screen coordinates of responder grant
+y0: screen coordinates of responder grant
+dx, dy: accumulated distance of gesture since touch started
+vx, vy: velocity of gesture
+All help interpret what gesture this is
+Panresponder handlers
+Ask to be the responder:
+-onStartShouldSetPanResponderCapture
+-onMoveSHOuld Set PanResponder
+-OnMoveShouldSetPan Responder onStartShouldSetPanResponderCapture
+Gesture started:
+-onPanResponderGrant
+-OnPanResponderMove
+
+User released all touches:
+OnPanResponderTerminationRequest
+OnPanResponderRelease
+OnPanResponderTerminate 
+
+Dish detail component, alert and panresponder from react native
+add suppport for gesture recognition
+
+add function recognizedrag > receive param > recognize user has copmpleted right to left gesture
+add function pan responder = panresponder.create({supply various callbacks for responder})
+callbacks:
+onStartShouldSetPanResponder > called when gesture begins > set up function that returns true, takes event and gesture state as params
+onPanResponderEnd > invoked when user lifts finger from screen > takes event and gestureState as params > 
+    inside function is if statements that recognize what gesture was done 
+    //gesturestate contains many props we can use (moveX, moveY,dX, dY)     
+    if recognizedrag(gestureState) 
+    //inside recognizedrag > if(gesture was left to right) aka if (dx <- 200) return true else return false
+        Alert.alert(add alrt for adding favorites etc) (3 params)
+    return true at completion of panResponder
+
+Add function into a View {...panResponder.panHandlers} now all panHandlers included inview
+
+Visual Feedback to User by using animations to indicate that you are recognizing the gesture and will respond
+Add in an animation trick to the card to give visual feedback to the user
+Animatable View
+ref={this.handleViewRef} gets reference to the view aka this view calls handleRef function
+implement the function that recieves reference as parameter => this.view =ref; obtain reference to view, and variable view is assigned to view
+need reference to apply animation to the view 
+in panresponder add another callback onPanResponderGrant: called when panresponder starts recognizes and has permission to respond
+give visual feedback now in the callback function > this.view.animation_of_choice or rubberband(duration) and this returns a promise
+.then(endState => ) endState tells what state of animation here is, console log to indicate whether it worked or not 
+
+Persist Redux
+May wish to persist store to permanent store and reload information to restore app to previous state
+Redux_Persist
+enablsed persist redux state to presisted storage on device between app launches
+rehydrate a redux store from persisted state on app launch
+Install yarn add redux-persist
+
+Configure store using persistCombineReducers
+-takes config object as first parameter to configure the storage to use, a key and additional configiration
+-specify the storage to use: local storage. session store, async storage, etc
+-pass the store to persistStore() that ensures that your redux state is saved to persisted storage whenver it changes
+first param is config js object, specify storage to use, the key, and additional info (which parts to persist etc)
+default is local storage
+pass store to persistStore which ensures the redux stage is saved to persisted storage on change
+React Integration
+Wrap root component with PersistGate
+-delays the rendering of your apps UI until the redux store is rehrydrated
+takes a loading messages component to display while rehydrating
+
+Persisting the store
+when we exit app and restart, the app state is completely gone
+redux persist allows this to store the info locally
+mobile concern mostly
+no network capability, want to give the user a minumim amount of information
+offline support for application
+configureStore > import { persistStore, persistCombineReducers } from 'react-persist'
+import storage from redux-persist/es/storage' gives access to local storage on device
+rather than combine reducers, use persistCombineReducers
+const config = {
+    key: 'root',
+    storage, (imported)
+    debug: true 
+}
+
+persistCombineReducers(config, {reducers});
+
+const persistor = persistStore(store) required within react native app config, return both persistor and store from configureStore function > used by app to configure persistance 
+app.js file > { PersistGate } import from 'redux-persist' Takes loading component it can render while re hydrating the store
+import loading component already designed earlier and apply > 
+ConfigureStore obtain both persistor and store
+surround Main component with PersistGate > loading={<Loading/>} persistor={persistor} two attributes, loading takes loading component and persistor takes persistor
+
+Assignment 3
+Alerts, Animtations Gestures and Persist store
+Task 1. Open reserve Table, add zoom animation to reservation form, so when form is shown the form is zoomed into the screen
+Task 2. Previously when user filled form and submitted, popped up modal to show info. Convert modal into an alert box with Ok and cancelability
+Task 3. Menu, specific dish, add gesture support when left to right gesture, pop up comment form onto the screen
+
+Expo SDK
+Free and open source tool chain built around react native
+create react native app with scaffolding uses expo tool chain
+expo cliewnt already in use for viewing app on device
+Native and JS library that provides access to the devices system functionality (camera, contacts, sensors, etc)
+software development kit
+access from javascript, no need to write native code (objective c swift etc)
+Convenient package to capabilities
+UI components to handle variety of use cases (icons, blur views, etc)
+Services for apps: managing assets, push notifications, building native binaries ready to deploy to app store
+expo client for android and ios: run projects on mobile devices over the air wirelessly previewing the app
+Command Line Interface (CLI) or Expo development environment (XDE)
+Expo and create-react-native-app
+CRNA also supports building a react native app without any build config
+does not need expo account
+expo account allows you to publish your project to a premanent url
+expo account allows you to build binaries for app play store distribuation
+with crna you need to run eject
+
+Limitations of Expo
+apps dont support background code execution (no background threads)
+background core execution
+not all ios and android apis are available
+if you need to keep your app size extremely lean, expo may not be the best choice
+if you know you want a particular push notification Services
+JS and assets managed by expo require connectivity to google cloud platform and aws 
+
+SecureStore API
+secure way of storing information on device using key value storage
+AsyncStorage
+simple unencrypted async persistent key value storage system
+global to the app
+use instead of local storage
+build abstraction around it before use
+ios backed by native code that stores small values in serialized dictionary and larger values in separate files
+android uses either rocksdb or sqlite based on availability
+typical get and set operations on items, and clearing data
+
+SecureStore
+provides way to encrypt and securely store keyvalue pairs locally on device
+separate for each project
+ios values stored using keychain services as ksecclassgenericpassword
+android: values stored in sharedpreferences encrypted with androids keystore system
+setItemAsync() getItemAsync, deleteItemAsync take key value and options
+Login component - username and password and remember me
+username and password persisted in secure store on device
+
+exercise: secure store
+secure way of storing key value pairs
+save login information for user for app
+create form for login and store username and password in secure store
+import { securestore } from expo
+create login component
+class Login extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: '',
+            password '',
+            remember: false
+        }
+    }
+
+    componentDidMount() {
+        SecureStore.getItemAsync('userinfo)
+        //get item from store, returns promise
+        .then(userdata => {
+            let userinfo = JSON.parse(userdata)
+            //have to convert into json string to store in secure store, get string back as well, so parse into json object
+            if (userinfo){
+                //if this exists
+                this.setState({username: userinfo.username})
+                this.setState({password: userinfo.password})
+                this.setState({remember: true})
+            }
+        })
+    }
+
+    static navigationOptions = {
+        title: 'Login'
+    }
+
+    render() {
+        //create view
+        return(
+            <View style='asdf>
+
+
+        )
+    }
+
+}
+
+//set up styles for view
+const styles = StyleSheet.create({
+    container: {
+        justifyContent: 'center
+    }
+})
+
+export default Login;
+
+Local notifications
+putting notifications into the notification bar of your device
+user capabilites of native platformr
+remind user of info
+
+provides access to remote notifications (aka push notifications ) and local notifications (scheduling and immediate) related function
+several methods:
+presentLocalNotificationAsync(localnotification)
+scheduleLocalNotificationAsync(localnotification, schedulingoptions)
+dismissNotificiationAsync(localNotificationID)
+LocalNotification object:
+title, body, data, sound, icon, (color, priority, sticky, vibrate, link (android only))
+
+Exercise Local notifications
+import Persmissions, Notifications from expo
+ask for permission to use notification bar
+two functions async obtainNotificationPermission, 
+check for permission
+let permission = await Permissions.getAsync(Permissions.User_facing_notification) wait for permission to be obtained
+if permission.status != 'granted'
+    no permission so cannot proceed 
+    if no permission ask for oit
+    permission = await askasync
+        if no permission:
+            alert no permission
+        return permission;
+
+async presentLocalNotification(date) {
+    wait for Permissions
+    await this.obtainNotificationPermission();
+    send the notification
+    Notifications.presentLocalNotificationAsync({
+        title: your ressy
+        body: 'REssy' + date + reqused
+        ios: {
+            sound: true
+        }
+        android: {
+            sound true
+            vibrate true
+            color: purple
+        }
+
+    })
+
+}
+
+Social Sharing
+API to compose mails using OS specific UI
+expo.mailcomposer.composeasync(options)
+options: recipients, subject, body, attachments etc
+Share API provided by reactnative
+share.share(content, options)
+content: message, title, url for content
+options: subject(ios), dialogTitle(android)
+
+Exercise: Sending Email using built in mail apps on device
+open mail composer window with predefined info
+expo SDK
+contact component: import Button, Icon from reactnativeelements, import mailcomposer from expo
+function sendmail() {
+    mailcomposer.composeasync({
+        recipients: ['kevinwalsh23@gmail.com'],
+        subject: 'Enquiry',
+        body: 'To who it may concern:\n'
+    })
+}
+
+Set up button for email
+
+Exercise: Social Sharing with Share API
+Share on social sites with application
+import Share from react native
+new function
+const shareDish (title, message, url) {
+    Share.share({
+        title: title,
+        message: title + ': ' + message + ' ' + url,
+        url: url
+    }, {
+        //specify dialogTitle
+        dialogTitle: 'Share' + title
+    })
+}
+Configure one more icon based button
+onPress call shareDish function, supply dish.name, dish.description, baseUrl + dish.Image
+
+Picking an Image
+Getting an image from the camera roll, allowing camera access
+ImagePicker: provides access to systems UI for
+-selecting images and videos from phones library
+-taking a photo with the camera
+Options: allowsEditing, aspect, quality, base64, exif 
+Image data returned as:
+-{cancelled: false, uri, width, height, type}
+-{cancelled: true} if user cancels the image selection
+ImageManipulator
+-API to modify images (change size, rotate, flip, crop)
+-Compress, format, base64
+-Takes uri of images, actions and options, returns uri of modified image
+-modifies image and returns separate file
+camera
+React component that renders a preview for the devices either front or back camera
+can adjust zoom, auto focus, white balance and flash mode
+can detect faces and read bar code
+methods like takepictureasync, recordasync on refernece to camera component
+
+Login Page
+Register tab
+in tag can set profile picture
+camera button allows you to take pick
+gallery button lets you choose old image 
+
+Exercise: Picking an Image && Tabbed Navigation
+Login Component
+add register portion
+import Text, ScrollView, Image from react-native 
+import Permissions, ImagePicker from expo
+import createBottomTabNavigator from react-navigation
+
+Login Component becomes Login Tab Component, becomes one tab in navigation
+navigationOptions > tabBarIcon: ({ tintColor }) => (
+    <Icon
+        name='sign-in'
+        type='font-awesome'
+        size={24}
+        iconStyle={{ color: tintColor }}
+        />
+)
+
+Add new component RegisterTab
+class RegisterTab extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            copy from above
+            firstname: '',
+            lastname: '',
+            email: '',
+            imageUrl: baseUrl+ 'images/logo.png',
+            remember: false
+        }
+    }
+
+    navigationOptions = {
+        title: 'Register',
+        tabBarIcon: {{ tintColor }} => {
+            same icon as above
+        }
+    }
+
+    add form similiar to login tab with additional fields
+
+
+}
+
+change Button type for login to use handleLogin function
+Add in one more button to the login form that will allow you to navigate form login to register
+<View style=styles.button>
+    Button onPress = this.props.navigation.navigate('Register')
+            title='Register'
+            clear
+            icon={
+                <icon>
+            }
+            titleStyle=blue
+</View>
+
+Create new Bottom Tab navigator (createBottomTabNavigator({
+    Login: LoginTab,
+    Register: RegisterTab},
+    tabBarOptions: {
+        activeBackgroundColor: '#9575CD',
+        inactiveBackgroundColor: 'D1C4E9'
+        activeTintColor: 'white',
+        inactiveTintColor: 'gray'
+    }
+}))
+
+Login as Bottom Tab Navigator Component
+
+Now add support to obtain image from application
+styles: add imageContainer with styles
+in register component add function 
+
+getImageFromCamera = async () => {
+    //get permission to use camera and camera roll 
+    const cameraPermission= await Permissions.askAsync(Permissions.Camera);
+    const cameraRollPermission = await Permission.askAsync(Permissions.Camera_ROLL)
+    if both permissions
+    if (cameraPermission.status === 'granted' && camerRollPermission.status === 'granted) {
+        let capturedImage = await ImagePicker.launchCameraAsync({
+            //configure properties
+            allowsEditing: true,
+            aspect: [4,3]
+        });
+
+        if (!capturedImage.cancelled) {
+            this.setState({ imageUrl: capturedImage.uri })
+        }
+    }
+
+}
+
+set up function to display the camera
+also set up handleRegister function
+handleRegister() {
+    console.log("REGISTER ATTEMPT" + this.state);
+    if this.state.remember {
+        secureStore.setItemAsync('userinfo')
+        copy whole thing from login function
+    }
+}
+
+<View styles.imagecontainer>
+    <Image source={{ uri: this.state.imageUrlm}} loadingIndicatorSource={{ require(./images/logo.png')}} style={styles.image}
+    <Button
+    title='Camera'
+    onPress={this.getImageFromCamera}
+
+
+ImageManipulator  (deprecated\)
+import Asset, ImageManipulator
+After get image from camera, process before making available to app
+processImage = async (imageUri) => {
+    let processedImage = await ImageManipulator.manipulate(
+        imageUri,
+        //specify actions to be taken on image,
+        { resize: {width: 400, height: 300}},
+        { format: 'png' }
+    );
+    this.setState{{ imageURL: processedImage.uri }}
+}
+
+Network info
+may wish to detech connectivity of device
+handle changes appropriately 
+Network status
+Network connectivity on mobile unpredictable
+Need to check and dynamically adapt to changes in real time
+Can support offline operation of mobile app by storing data locally (database) to provide limited access and features
+-restore features on regaining network connectivity
+Network info obtained through NetInfo API
+exposes info about online/offline status
+connectionType: none, wifi cellular, unknown
+EffectiveConnectionType: 2g, 3g, 4h etc
+Supports methods
+-addEventListener(event, handler) handler notified of changes to connection
+-removeEventListener()
+-getConnectionInfo()
+-isConnectionExpensive()
+connectionChange event fires when network status changes
+-handler receives connectionType and EffectiveConnectionType arguments
+
+Network Exercise
+Main Component
+import Netinfo, ToastAndroid
+componentDidMount method
+
+NetInfo.getConnectionInfo()
+//returns a promise
+    .then((connection info) => {
+        //generate message
+        ToastAndroid.show('Initial Network connectivity Type: ' 
+        + connectioninfo.type + ', effectiveType ' + connectionInfo.effectiveType, 
+        ToastAndroid.LONG)
+
+        NetInfo.addEventListener('connectionChange', this.handleConnectivityChange)
+    })
+
+    //when registering listening, unregister as well
+    componentWillUnmount() {
+        NetInfo.removeEventListener('connectionChange', this.handleConnectivityChange);
+
+    }
+
+    handleConnectivityChange = () (connectionInfo) => {
+        switch (connectionInfo.Type) {
+            case 'none':
+                ToastAndroid.show('You are now offline', ToastAndroid.LONG);
+                break;
+            case 'wifi':
+                ToastAndroid.show('You are now connected to wifi', ToastAndroid.LONG);
+                break;
+            case 'cellular':
+                ToastAndroid.show('You are now connected to cellular network', ToastAndroid.LONG);
+                break;
+            case 'unknown':
+                ToastAndroid.show('Your connection is unknown', ToastAndroid.LONG);
+                break;
+            default:
+                break;
+        }
+    }
+
+    Building Standalone apps
+    Deploying to the IOS and Android store
+    Expo has ways to build without xcode or android studio
+
+    Sign up for Expo
+    Download XDE Tool for Desktop
+    sign into account
+
+    Open existing project > Opens and packages project
+
+    Install Expo Command Line Interface
+    sudo yarn global add exp or npm install -g exp
+    download icon for application for launcher screen > icon.png file > move into projects folder
+
+    Package.json > name > typed correctlty
+    App.json > sdkVersion already configured > add name: confusion, icon: ./icon.png, version: 1.0.0, slug: confusion (slug gives name used in expo account to identify this project)
+    ios: {
+        bundleIdentifier: net.food.confusion.confusion (reverse of domain name)
+    }
+    android: {
+        package: net.food.confusion.confusion
+    }
+
+    time to build react native application > instructions in link for exercise resources (demo android in video)
+
+    New Project > dev project locally > publisher your project > deploy to iTunes Store and Google play
+
+    New Project > Dev Project Locally > Publisher Project > Detach to ExpoKit > Deploy to Itunes Store
+
+    APK or IPA
+
+    exp --version
+    may need to restart terminal
+    exp build:android
+    gives link where app is available
+    second link shows building process
+    takes a while to complete (minutes to an hour)
+    download link
+    also gives url to download the build (APK file)
+    downloaded file and copied/installed file to android device
+    
+

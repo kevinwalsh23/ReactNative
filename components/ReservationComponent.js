@@ -3,7 +3,7 @@ import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal, Aler
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker'
 import * as Animatable from 'react-native-animatable';
-import { Permissions, Notifications } from 'expo';
+import { Permissions, Notifications, Calendar } from 'expo';
 
 class Reservation extends Component {
 
@@ -40,12 +40,22 @@ class Reservation extends Component {
             },
                 {text: 'OK', onPress: () => {
                     this.presentLocalNotification(this.state.date);
+                    this.addReservationToCalendar(this.state.date);                    
                     this.resetForm();
+                    Alert.alert(
+                        'Reservation Confirmed',
+                        'Thanks, we look forward to seeing you!',
+                        [
+                            {text: 'Dismiss', style: 'cancel'}
+                        ],
+                        { cancelable: true }
+                    );
                 }
             }
             ],
             { cancelable: false }
         );
+        
     }
     resetForm() {
         this.setState({
@@ -55,6 +65,47 @@ class Reservation extends Component {
             showModal: false
         });
     }
+    async addReservationToCalendar(date){
+        await this.obtainCalendarPermission();                                            
+        let newstart = Date.parse(date);
+        let newend = newstart + (2*60*60*1000);
+        
+        let details = {
+            title: 'Restaurante Con Fusion Reservation',
+            startDate: newstart,
+            endDate: newend,
+            location: '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong',
+            timeZone: 'Asia/Hong_Kong'
+        }
+        Calendar.createEventAsync(Calendar.DEFAULT, details);
+        //createEventAsync() 
+        //This function takes a title, the start and end time, timezone and location as the parameters
+        //Use 'Con Fusion Table Reservation' as the title of the inserted event
+        //To specify the start Date and end Date, you can convert the Date ISO string into a Date 
+        //object by using new Date(Date.parse(date)). Furthermore, the Date.parse() gives you the date value 
+        //in milliseconds. You can set up the end time by adding 2 hours (2*60*60*1000) to the milliseconds 
+        //and use it to generate the Date object corresponding to the end time of the event.
+        //For time zone use 'Asia/Hong_Kong', and the location as '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
+    }
+    async obtainCalendarPermission() {
+        let calendarPermission = await Permissions.getAsync(Permissions.CALENDAR);
+        console.log(calendarPermission);
+        if (calendarPermission.status !== 'granted') {
+            calendarPermission = Permissions.askAsync(Permissions.CALENDAR);
+            if (calendarPermission.status !== 'granted') {
+                Alert.alert('Permission not granted to add reservation to calendar!');
+                calendarPermission = Permissions.askAsync(Permissions.CALENDAR);
+            }
+
+        
+        }
+        console.log(calendarPermission.status);
+        console.log('this thing actually hit');
+        console.log(this.state.date);
+        return calendarPermission;
+    }
+    //receives the date information as a parameter
+    
 
     async obtainNotificationPermission() {
         let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
